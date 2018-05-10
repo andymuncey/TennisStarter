@@ -33,15 +33,12 @@ class BasicGameTests: XCTestCase, GameTests {
         super.tearDown()
     }
     
-
-    
     func testZeroPoints(){
         XCTAssertEqual(game.player1Score(), "0", "P1 score correct with 0 points")
         XCTAssertEqual(game.player2Score(), "0", "P2 score correct with 0 points")
     }
     
     func testAddOnePoint() {
-        
         game.addPointToPlayer1()
         XCTAssertEqual(game.player1Score(),"15","P1 score correct with 1 point")
         
@@ -50,7 +47,6 @@ class BasicGameTests: XCTestCase, GameTests {
     }
     
     func testAddTwoPoints() {
-        
         game.addPointToPlayer1()
         game.addPointToPlayer1()
         
@@ -62,7 +58,6 @@ class BasicGameTests: XCTestCase, GameTests {
     }
     
     func testAddThreePoints() {
-        
         game.addPointToPlayer1()
         game.addPointToPlayer1()
         game.addPointToPlayer1()
@@ -89,7 +84,6 @@ class BasicGameTests: XCTestCase, GameTests {
     }
     
     func testAdvP1Advantage() {
-        
         getToDeuce()
         game.addPointToPlayer1()
         XCTAssertEqual(game.player1Score(),"A","P1 score correct with P1 Advantage")
@@ -98,7 +92,6 @@ class BasicGameTests: XCTestCase, GameTests {
     }
     
     func testAdvP2Advantage() {
-        
         getToDeuce()
         game.addPointToPlayer2()
         XCTAssertEqual(game.player1Score(),"40","P1 score correct with P2 Advantage")
@@ -190,7 +183,7 @@ class BasicGameTests: XCTestCase, GameTests {
         XCTAssertTrue(game.player1Won())
         XCTAssertTrue(game.complete())
         XCTAssertTrue(game.player1Won())
-        XCTAssertTrue(game.complete())
+        XCTAssertTrue(game.complete(),"Once a game is complete it should remain complete")
     }
 
     func testWinMultipleCallsP2(){
@@ -200,7 +193,7 @@ class BasicGameTests: XCTestCase, GameTests {
         XCTAssertTrue(game.player2Won())
         XCTAssertTrue(game.complete())
         XCTAssertTrue(game.player2Won())
-        XCTAssertTrue(game.complete())
+        XCTAssertTrue(game.complete(),"Once a game is complete it should remain complete")
     }
     
 }
@@ -219,17 +212,14 @@ class GamePointsTests : XCTestCase, GameTests {
     }
     
     func testNoGamePointsP1() {
-        
         game.addPointToPlayer1()
         XCTAssertEqual(game.gamePointsForPlayer1(), 0, "P1 has no game points at 15-0")
         
         game.addPointToPlayer1()
         XCTAssertEqual(game.gamePointsForPlayer1(), 0, "P1 has no game points at 30-0")
-        
     }
     
     func testGamePointsP1() {
-        
         for _ in 0...2{
             game.addPointToPlayer1()
         }
@@ -249,7 +239,6 @@ class GamePointsTests : XCTestCase, GameTests {
     }
     
     func testNoGamePointsP2() {
-        
         game.addPointToPlayer2()
         XCTAssertEqual(game.gamePointsForPlayer2(), 0, "P2 has no game points at 0-15")
         
@@ -258,10 +247,7 @@ class GamePointsTests : XCTestCase, GameTests {
         
     }
     
-    
-    
     func testGamePointsP2() {
-        
         for _ in 0...2{
             game.addPointToPlayer2()
         }
