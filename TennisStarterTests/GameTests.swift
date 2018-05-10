@@ -1,14 +1,26 @@
-//
-//  GameTests.swift
-//  TennisStarter
-//
-//  Created by Andrew Muncey on 09/06/2015.
-//  Copyright (c) 2015 University of Chester. All rights reserved.
-//
-
 import XCTest
 
-class GameTests: XCTestCase {
+@testable import TennisStarter
+
+protocol GameTests {
+    
+    var game: Game! {get set}
+    
+    func getToDeuce()
+}
+
+extension GameTests {
+    func getToDeuce(){
+        game.addPointToPlayer1() //15 - 0
+        game.addPointToPlayer1() //30 - 0
+        game.addPointToPlayer1() //40 - 0
+        game.addPointToPlayer2() //40 - 15
+        game.addPointToPlayer2() //40 - 30
+        game.addPointToPlayer2() //40 - 40
+    }
+}
+
+class BasicGameTests: XCTestCase, GameTests {
     
     var game: Game!
     
@@ -21,16 +33,7 @@ class GameTests: XCTestCase {
         super.tearDown()
     }
     
-    func getToDeuce(){
-        game.addPointToPlayer1() //15 - 0
-        game.addPointToPlayer1() //30 - 0
-        game.addPointToPlayer1() //40 - 0
-        
-        
-        game.addPointToPlayer2() //40 - 15
-        game.addPointToPlayer2() //40 - 30
-        game.addPointToPlayer2() //40 - 40
-    }
+
     
     func testZeroPoints(){
         XCTAssertEqual(game.player1Score(), "0", "P1 score correct with 0 points")
@@ -72,14 +75,14 @@ class GameTests: XCTestCase {
     }
     
     func testSimpleWinP1(){
-        for i in 0...3{
+        for _ in 0...3{
             game.addPointToPlayer1()
         }
         XCTAssertTrue(game.player1Won(), "P1 win after 4 consecutive points")
     }
     
     func testSimpleWinP2(){
-        for i in 0...3{
+        for _ in 0...3{
             game.addPointToPlayer2()
         }
         XCTAssertTrue(game.player2Won(), "P2 win after 4 consecutive points")
@@ -115,7 +118,7 @@ class GameTests: XCTestCase {
     
     func testMultipleAdvantages(){
         getToDeuce()
-        for i in 0...1023{
+        for _ in 0...1023{
             game.addPointToPlayer1()
             game.addPointToPlayer2()
             game.addPointToPlayer2()
@@ -126,17 +129,93 @@ class GameTests: XCTestCase {
     }
     
     func testGameCompleteP1Win(){
-        for i in 0...3{
+        for _ in 0...3{
             game.addPointToPlayer1()
         }
-        XCTAssertTrue(game.gameComplete(), "Game complete with P1 win")
+        XCTAssertTrue(game.complete(), "Game complete with P1 win")
     }
     
     func testGameCompleteP2Win(){
-        for i in 0...3{
+        for _ in 0...3{
             game.addPointToPlayer2()
         }
-        XCTAssertTrue(game.gameComplete(), "Game complete with P1 win")
+        XCTAssertTrue(game.complete(), "Game complete with P1 win")
+    }
+    
+    func testReachingDeuce(){
+        getToDeuce()
+        XCTAssertEqual(game.player1Score(),"40","P1 score correct reaching Deuce")
+        XCTAssertEqual(game.player2Score(),"40","P1 score correct reaching Deuce")
+        XCTAssertFalse(game.player1Won())
+        XCTAssertFalse(game.player2Won())
+        XCTAssertFalse(game.complete())
+    }
+    
+    func testNoPrematureWinP1(){
+        XCTAssertFalse(game.player1Won())
+        XCTAssertFalse(game.complete())
+        for _ in 1...3{ //up to 40:0
+            game.addPointToPlayer1()
+            XCTAssertFalse(game.player1Won())
+            XCTAssertFalse(game.complete())
+        }
+        for _ in 1...3{ //to 40:40
+            game.addPointToPlayer2()
+        }
+        game.addPointToPlayer1() //A:40
+        XCTAssertFalse(game.player1Won())
+        XCTAssertFalse(game.complete())
+    }
+    
+    func testNoPrematureWinP2(){
+        XCTAssertFalse(game.player2Won())
+        XCTAssertFalse(game.complete())
+        for _ in 1...3{ //up to 0:40
+            game.addPointToPlayer2()
+            XCTAssertFalse(game.player2Won())
+            XCTAssertFalse(game.complete())
+        }
+        for _ in 1...3{ //to 40:40
+            game.addPointToPlayer1()
+        }
+        game.addPointToPlayer2() //40:A
+        XCTAssertFalse(game.player2Won())
+        XCTAssertFalse(game.complete())
+    }
+    
+    func testWinMultipleCallsP1(){
+        for _ in 0...4 {
+            game.addPointToPlayer1()
+        }
+        XCTAssertTrue(game.player1Won())
+        XCTAssertTrue(game.complete())
+        XCTAssertTrue(game.player1Won())
+        XCTAssertTrue(game.complete())
+    }
+
+    func testWinMultipleCallsP2(){
+        for _ in 0...4 {
+            game.addPointToPlayer2()
+        }
+        XCTAssertTrue(game.player2Won())
+        XCTAssertTrue(game.complete())
+        XCTAssertTrue(game.player2Won())
+        XCTAssertTrue(game.complete())
+    }
+    
+}
+
+class GamePointsTests : XCTestCase, GameTests {
+    
+    var game: Game!
+    
+    override func setUp() {
+        super.setUp()
+        game = Game()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
     }
     
     func testNoGamePointsP1() {
@@ -151,11 +230,11 @@ class GameTests: XCTestCase {
     
     func testGamePointsP1() {
         
-        for i in 0...2{
+        for _ in 0...2{
             game.addPointToPlayer1()
         }
         XCTAssertEqual(game.gamePointsForPlayer1(), 3, "P1 has 3 game points at 40-0")
-
+        
         game.addPointToPlayer2()
         XCTAssertEqual(game.gamePointsForPlayer1(), 2, "P1 has 2 game points at 40-15")
         
@@ -179,9 +258,11 @@ class GameTests: XCTestCase {
         
     }
     
+    
+    
     func testGamePointsP2() {
         
-        for i in 0...2{
+        for _ in 0...2{
             game.addPointToPlayer2()
         }
         XCTAssertEqual(game.gamePointsForPlayer2(), 3, "P2 has 3 game points at 0-40")
@@ -198,5 +279,6 @@ class GameTests: XCTestCase {
         game.addPointToPlayer2()
         XCTAssertEqual(game.gamePointsForPlayer2(), 1, "P2 has 1 game point at 40-A")
     }
-    
 }
+
+

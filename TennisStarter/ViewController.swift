@@ -1,28 +1,14 @@
-//
-//  ViewController.swift
-//  TennisStarter
-//
-//  Created by Andrew Muncey on 09/06/2015.
-//  Copyright (c) 2015 University of Chester. All rights reserved.
-//
-
 import UIKit
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-       
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        
-    }
-
+    
     @IBOutlet weak var p1NameLabel: UILabel!
     @IBOutlet weak var p2NameLabel: UILabel!
-    
     
     @IBOutlet weak var p1PointsLabel: UILabel!
     @IBOutlet weak var p2PointsLabel: UILabel!
@@ -36,11 +22,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var p1PreviousSetsLabel: UILabel!
     @IBOutlet weak var p2PreviousSetsLabel: UILabel!
     
+    @IBOutlet weak var player1Button: UIButton!
+    @IBOutlet weak var player2Button: UIButton!
     
-    @IBAction func p1AddPointPressed(sender: UIButton) {
+    @IBAction func p1AddPoint(_ sender: UIButton) {
+        
     }
 
-    @IBAction func p2AddPointPressed(sender: UIButton) {
+    @IBAction func p2AddPoint(_ sender: UIButton) {
+        
+    }
+    
+    @IBAction func restart(_ sender: Any) {
+        
     }
 }
 
